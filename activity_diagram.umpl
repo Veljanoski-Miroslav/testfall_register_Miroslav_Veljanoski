@@ -1,0 +1,65 @@
+@startuml
+title Testfallsregistrering – aktivitetsdiagram
+
+start
+:call main();
+:use clear_screen();
+
+repeat
+  :show main menu;
+  :read choice;
+
+  if (choice == "1") then (Register test case)
+    :create RegisterMenu;
+    :call display_register();
+    :use clear_screen();
+
+    repeat
+      :show submenu;
+      :read choice;
+
+      if (choice == "1") then (New test case)
+        :use clear_screen();
+        :read testcase_id;
+        :read testcase_name;
+        :read testcase_description;
+
+        if (id is a number?) then (yes)
+          if (name and description filled in?) then (yes)
+            :call add_register(id, name, description);
+            :create Register;
+            :append Register to registers;
+            :show confirmation;
+          else (no)
+            :show error message;
+          endif
+        else (no)
+          :show error message;
+        endif
+        :use pause();
+      elseif (choice == "2") then (Show all test cases)
+        :use clear_screen();
+        :call display_registers();
+        if (registers is empty?) then (yes)
+          :show "No test cases registered yet";
+        else (no)
+          :show each test case with id, name and description;
+        endif
+        :use pause();
+      else (choice == "3")
+        :return to main menu;
+      endif
+    repeat while (choice != "3") is (continue)
+  elseif (choice == "2") then (Exit)
+    :use clear_screen();
+    :show farewell message;
+    :use pause();
+  else (other choice)
+    :use clear_screen();
+    :show "Invalid choice";
+    :use pause();
+  endif
+repeat while (choice != "2") is (continue)
+
+stop
+@enduml

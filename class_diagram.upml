@@ -1,0 +1,40 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+class Register {
+  + test_id : int
+  + test_name : str
+  + test_description : str
+  + __init__(test_id, test_name, test_description)
+}
+
+class RegisterTestcase {
+  + registers : list[Register]
+  + add_register(testcase_id, testcase_name, testcase_description) : Register
+  + display_registers() : None
+}
+
+class RegisterMenu {
+  + register : RegisterTestcase
+  + display_register() : None
+  - _add_testfall() : None
+}
+
+class "main.py" as Main  {
+  + main() : None
+}
+
+class "console_helper.py" as Console  {
+  + clear_screen() : None
+  + pause() : None
+}
+
+Main ..> RegisterMenu : creates and calls\ndisplay_register()
+Main ..> Console : use
+RegisterMenu *-- RegisterTestcase : owns
+RegisterMenu ..> Console : use
+RegisterTestcase "1" o-- "0..*" Register : registers
+RegisterTestcase ..> Register : creates
+
+@enduml

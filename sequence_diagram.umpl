@@ -1,0 +1,72 @@
+@startuml
+title Testfallsregistrering – sekvensdiagram
+
+actor User
+participant "main" as Main
+participant "RegisterMenu" as Menu
+participant "RegisterTestcase" as Testcase
+participant "Register" as Reg
+participant "console_helper" as Console
+
+User -> Main : run program
+activate Main
+Main -> Console : call clear_screen()
+Main -> User : show main menu
+User -> Main : choice = "1"
+Main -> Menu : create
+activate Menu
+Main -> Menu : call display_register()
+Menu -> Console : call clear_screen()
+Menu -> User : show submenu
+User -> Menu : choice = "1"
+
+Menu -> Console : call clear_screen()
+Menu -> User : request id, name, description
+User -> Menu : id, name, description
+Menu -> Menu : call _add_testfall()
+
+alt id is a number and fields are filled in
+  Menu -> Testcase : call add_register(id, name, description)
+  activate Testcase
+  Testcase -> Reg : create
+  activate Reg
+  Reg --> Testcase : return register
+  deactivate Reg
+  Testcase -> Testcase : append register to registers
+  Testcase --> Menu : return register
+  deactivate Testcase
+  Menu -> User : show confirmation
+  Menu -> Console : call pause()
+else id or fields are invalid
+  Menu -> User : show error message
+  Menu -> Console : call pause()
+end
+
+User -> Menu : choice = "2"
+Menu -> Console : call clear_screen()
+Menu -> Testcase : call display_registers()
+activate Testcase
+
+alt registers is empty
+  Testcase --> Menu : return no test cases
+  Menu -> User : show "No test cases registered yet"
+else test cases exist
+  loop each register in registers
+    Testcase -> User : show id, name, description
+  end
+end
+deactivate Testcase
+
+User -> Menu : choice = "3"
+Menu --> Main : return
+deactivate Menu
+
+User -> Main : choice = "2"
+Main -> Console : call clear_screen()
+Main -> User : show farewell message
+Main -> Console : call pause()
+Main --> User : return, program exits
+deactivate Main
+
+@enduml
+
